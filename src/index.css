@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Uthmani';
-  src: url('./assets/UthmanTNB_v2-0.ttf') format('truetype');
+  font-family: 'Elgharib';
+  src: url('./assets/Elgharib-KFGQPCHafs.V1.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -34,22 +34,22 @@
 .light {
   --color-main: #ffffff;
   --color-card: #ffffff;
-  --color-surface: #f8fafc;
+  --color-surface: #f3f4f6;
   --color-elevated: #f8fafc;
-  --color-content: #f1f5f9;
+  --color-content: #e5e7eb;
   --color-footer: #ffffff;
   --color-accent: #2563eb;
   --color-badge: #ffffff;
   --color-badge-text: #ffffff;
   
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #1e293b;
-  --color-text-tertiary: #334155;
-  --color-text-muted: #475569;
-  --color-text-subtle: #64748b;
+  --color-text-primary: #111827;
+  --color-text-secondary: #1f2937;
+  --color-text-tertiary: #374151;
+  --color-text-muted: #4b5563;
+  --color-text-subtle: #6b7280;
   
-  --color-border-primary: #e2e8f0;
-  --color-border-secondary: #f1f5f9;
+  --color-border-primary: #d1d5db;
+  --color-border-secondary: #e5e7eb;
 }
 
 .sepia {
@@ -101,7 +101,15 @@
   }
 
   .quran-text {
-    font-family: 'Uthmani', serif;
+    font-family: 'Elgharib', serif;
+    font-feature-settings: 'liga' 1, 'dlig' 1, 'calt' 1, 'kern' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .quran-text-ibm {
+    font-family: 'IBM Plex Sans Arabic', 'Segoe UI', 'Roboto', sans-serif;
     font-feature-settings: 'liga' 1, 'dlig' 1, 'calt' 1, 'kern' 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -136,7 +144,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
     background: var(--color-card);
     border: 1px solid var(--color-border-secondary);
     color: var(--color-text-muted);
@@ -158,7 +166,7 @@
   }
 
   .theme-button:hover svg {
-    transform: scale(1.1);
+    transform: none;
   }
 
   .verse-card {
@@ -191,22 +199,33 @@
   .info-badge {
     background: var(--color-badge);
     border-radius: 8px;
-    padding: 12px;
+    height: 52px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 64px;
     transition: background-color 0.3s ease;
   }
 
   .info-badge-label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--color-text-muted);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+    text-align: center;
   }
 
   .info-badge-value {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--color-text-primary);
     font-family: 'IBM Plex Sans Arabic', sans-serif;
+    line-height: 1.2;
+    text-align: center;
+    padding-bottom: 2px;
   }
 
   .btn-primary {
@@ -217,12 +236,11 @@
     padding: 14px 28px;
     font-weight: 600;
     font-size: 15px;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
   }
 
   .btn-primary:hover {
     opacity: 0.9;
-    transform: translateY(-1px);
   }
 
   .btn-secondary {
@@ -232,13 +250,11 @@
     border-radius: 10px;
     padding: 10px 18px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
   }
 
   .btn-secondary:hover {
     background: var(--color-content);
-    color: var(--color-text-primary);
-    transform: translateY(-1px);
   }
 
   .font-size-button {
@@ -249,7 +265,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
     background: var(--color-card);
     color: var(--color-text-tertiary);
     border: 1px solid var(--color-border-secondary);
@@ -282,12 +298,143 @@
     background: var(--color-card);
     color: var(--color-text-tertiary);
     border: 1px solid var(--color-border-secondary);
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
   }
 
   .font-size-reset:hover {
     background: var(--color-elevated);
     color: var(--color-text-primary);
+  }
+
+  .font-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .font-dropdown-button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 13px;
+    background: var(--color-card);
+    color: var(--color-text-tertiary);
+    border: 1px solid var(--color-border-secondary);
+    transition: background-color 0.2s ease;
+    min-width: 100px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .font-dropdown-button:hover {
+    background: var(--color-elevated);
+    color: var(--color-text-primary);
+  }
+
+  .font-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-card);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .font-dropdown-item {
+    padding: 8px 12px;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  .font-dropdown-item:hover {
+    background: var(--color-elevated);
+    color: var(--color-text-primary);
+  }
+
+  .font-dropdown-item.active {
+    background: var(--color-accent);
+    color: var(--color-main);
+  }
+
+  .font-dropdown-mobile {
+    position: relative;
+    display: inline-block;
+  }
+
+  .font-dropdown-button-mobile {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 11px;
+    background: var(--color-card);
+    color: var(--color-text-tertiary);
+    border: 1px solid var(--color-border-secondary);
+    transition: background-color 0.2s ease;
+    min-width: 70px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    height: 36px;
+  }
+
+  .font-dropdown-button-mobile:hover {
+    background: var(--color-elevated);
+    color: var(--color-text-primary);
+  }
+
+  .font-dropdown-menu-mobile {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-card);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .font-dropdown-item-mobile {
+    padding: 6px 8px;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  .font-dropdown-item-mobile:hover {
+    background: var(--color-elevated);
+    color: var(--color-text-primary);
+  }
+
+  .font-dropdown-item-mobile.active {
+    background: var(--color-accent);
+    color: var(--color-main);
   }
 
   .header-container {
@@ -376,7 +523,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
     background: var(--color-card);
     border: 1px solid var(--color-border-secondary);
     color: var(--color-text-muted);
@@ -415,7 +562,13 @@
   .info-badge-mobile {
     background: var(--color-badge);
     border-radius: 6px;
-    padding: 8px;
+    height: 46px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 56px;
     transition: background-color 0.3s ease;
   }
 
@@ -424,6 +577,8 @@
     font-weight: 500;
     color: var(--color-text-muted);
     margin-bottom: 4px;
+    line-height: 1.2;
+    text-align: center;
   }
 
   .info-badge-value-mobile {
@@ -431,26 +586,27 @@
     font-weight: 600;
     color: var(--color-text-primary);
     font-family: 'IBM Plex Sans Arabic', sans-serif;
+    line-height: 1.2;
+    text-align: center;
+    padding-bottom: 2px;
   }
 
   /* Audio Controls */
   .audio-control-button {
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
   }
   
   .audio-control-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15);
+    background: var(--color-elevated);
   }
   
   .audio-control-button:active {
-    transform: translateY(0);
+    transform: none;
   }
   
   .audio-control-button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-    transform: none;
   }
   
   .audio-progress-bar {
@@ -491,7 +647,7 @@
   
   .embedded-audio-player .audio-control-button:hover {
     box-shadow: 0 4px 16px rgba(96, 165, 250, 0.2);
-    transform: translateY(-2px);
+    transform: none;
   }
   
   .light .audio-progress-bar {
@@ -568,4 +724,206 @@
       min-width: 44px;
     }
   }
+
+  /* Basmala Styling */
+  .basmala-text {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    color: var(--color-accent);
+    text-align: center;
+    position: relative;
+    padding: 1rem 0;
+    font-weight: 500;
+  }
+
+  .basmala-text::before,
+  .basmala-text::after {
+    content: '';
+    position: absolute;
+    height: 1px;
+    width: 20%;
+    background: var(--color-accent);
+    opacity: 0.3;
+  }
+
+  .basmala-text::before {
+    top: 0;
+    left: 40%;
+  }
+
+  .basmala-text::after {
+    bottom: 0;
+    left: 40%;
+  }
+}
+
+.light .translation-panel,
+.light .translation-panel-mobile {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.light .embedded-audio-player {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.light .audio-progress-bar {
+  background-color: #f1f5f9;
+  border-radius: 6px;
+}
+
+.light .audio-progress-bar::before {
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.08), transparent);
+}
+
+/* Style both audio and tafseer buttons the same way */
+.light .audio-control-button,
+.light button[title="عرض التفسير"] {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #1f2937;
+  border-radius: 8px;
+}
+
+.light .audio-control-button:hover,
+.light button[title="عرض التفسير"]:hover {
+  background-color: #f8fafc;
+}
+
+.light .audio-control-button:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+}
+
+.light .embedded-audio-player .text-text-muted {
+  color: #4b5563;
+}
+
+.light .embedded-audio-player .bg-card\/80 {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+}
+
+/* Override the default background for tafseer button in light mode */
+.light button[title="عرض التفسير"].bg-surface {
+  background-color: #ffffff !important;
+}
+
+/* Remove hover scale from icons */
+.group-hover\:scale-110 {
+  transform: none !important;
+}
+
+/* Override any transform animations */
+[class*="hover\:scale-"],
+[class*="group-hover\:scale-"] {
+  transform: none !important;
+}
+
+/* Remove box shadows */
+.embedded-audio-player .audio-control-button,
+.audio-control-button,
+.btn-primary,
+.btn-secondary,
+.theme-button,
+button[title="عرض التفسير"] {
+  box-shadow: none !important;
+}
+
+.embedded-audio-player .audio-control-button:hover,
+.audio-control-button:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.theme-button:hover,
+button[title="عرض التفسير"]:hover {
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Light mode specific styles */
+.light .audio-control-button,
+.light button[title="عرض التفسير"] {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #1f2937;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.light .audio-control-button:hover,
+.light button[title="عرض التفسير"]:hover {
+  background-color: #f8fafc;
+}
+
+/* Ensure tafseer ayah number badge text stays white in light mode */
+.light .bg-accent.text-main {
+  color: #ffffff !important;
+}
+
+/* Mobile theme button */
+.theme-button-mobile {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-secondary);
+  color: var(--color-text-muted);
+  padding: 0;
+  margin: 0;
+}
+
+.theme-button-mobile:hover {
+  background: var(--color-elevated);
+  color: var(--color-text-primary);
+}
+
+.theme-button-mobile.active {
+  background: var(--color-accent);
+  color: var(--color-main);
+  border-color: var(--color-accent);
+}
+
+/* Remove all transforms and shadows */
+button, 
+.btn-primary,
+.btn-secondary,
+.theme-button,
+.theme-button-mobile,
+.audio-control-button,
+.font-size-button,
+.font-size-reset {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove hover transforms */
+button:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.theme-button:hover,
+.theme-button-mobile:hover,
+.audio-control-button:hover,
+.font-size-button:hover,
+.font-size-reset:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove icon scales */
+[class*="hover\:scale-"],
+[class*="group-hover\:scale-"],
+.group-hover\:scale-110 {
+  transform: none !important;
+}
+
+.light .info-badge,
+.light .info-badge-mobile {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
 }

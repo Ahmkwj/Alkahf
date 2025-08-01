@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { fetchSurahAlKahfComplete } from '../services/quranApi';
 import type { ProcessedVerse } from '../services/quranApi';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
-
-type Theme = 'dark' | 'light' | 'sepia';
+import { useUserPreferences } from '../hooks/useUserPreferences';
+import TafseerModal from './TafseerModal';
 
 const SurahText: React.FC = () => {
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
@@ -12,15 +12,26 @@ const SurahText: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [fontSizeLevel, setFontSizeLevel] = useState(5);
-  const [currentTheme, setCurrentTheme] = useState<Theme>('dark');
+  const [isFontDropdownOpen, setIsFontDropdownOpen] = useState(false);
+  const [isFontDropdownMobileOpen, setIsFontDropdownMobileOpen] = useState(false);
   
-  // Audio player hook
+  const [isTafseerModalOpen, setIsTafseerModalOpen] = useState(false);
+  const [selectedTafseerVerse, setSelectedTafseerVerse] = useState<ProcessedVerse | null>(null);
+  
   const { audioState, audioControls } = useAudioPlayer();
-
-  const getFontSize = (level: number) => {
-    return 1.2 + (level - 1) * 0.15;
-  };
+  
+  const {
+    currentTheme,
+    fontSizeLevel,
+    currentFont,
+    currentFontSize,
+    changeTheme,
+    increaseFontSize,
+    decreaseFontSize,
+    changeFontType,
+    getFontClass,
+    getFontDisplayName
+  } = useUserPreferences();
 
   const formatTime = (timeInSeconds: number): string => {
     if (!timeInSeconds || isNaN(timeInSeconds)) return '0:00';
@@ -30,18 +41,30 @@ const SurahText: React.FC = () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const increaseFontSize = () => setFontSizeLevel(prev => Math.min(prev + 1, 10));
-  const decreaseFontSize = () => setFontSizeLevel(prev => Math.max(prev - 1, 1));
-  const resetFontSize = () => setFontSizeLevel(5);
-
-  const changeTheme = (theme: Theme) => {
-    setCurrentTheme(theme);
-    document.documentElement.className = theme;
+  const handleChangeFontType = (fontType: 'elgharib' | 'ibm') => {
+    changeFontType(fontType);
+    setIsFontDropdownOpen(false);
+    setIsFontDropdownMobileOpen(false);
   };
 
   useEffect(() => {
     document.documentElement.className = currentTheme;
   }, [currentTheme]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.font-dropdown') && !target.closest('.font-dropdown-mobile')) {
+        setIsFontDropdownOpen(false);
+        setIsFontDropdownMobileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const loadAllVerses = async () => {
@@ -87,8 +110,6 @@ const SurahText: React.FC = () => {
     setFilteredVerses(filtered);
   }, [searchQuery, verses]);
 
-  const currentFontSize = getFontSize(fontSizeLevel);
-
   if (loading) {
     return (
       <section className="min-h-screen flex items-center justify-center bg-main px-4">
@@ -126,9 +147,7 @@ const SurahText: React.FC = () => {
     <section className="py-8 sm:py-16 min-h-screen bg-main">
       <div className="container max-w-5xl mx-auto px-4 sm:px-6">
         <div className="bg-surface rounded-xl p-3 sm:p-4 mb-6 sm:mb-8">
-          {/* Mobile Layout */}
           <div className="block sm:hidden space-y-4">
-            {/* Search Bar */}
             <div className="relative">
               <input
                 type="text"
@@ -155,9 +174,7 @@ const SurahText: React.FC = () => {
               )}
             </div>
             
-            {/* Controls Row */}
             <div className="flex flex-col gap-4">
-              {/* Theme Buttons */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-text-secondary text-xs font-medium">المظهر</span>
@@ -192,7 +209,6 @@ const SurahText: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Font Size Controls */}
                 <div className="flex items-center gap-2">
                   <span className="text-text-secondary text-xs font-medium">الخط</span>
                   <div className="flex items-center gap-1.5">
@@ -220,10 +236,42 @@ const SurahText: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              <div className="flex items-center justify-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-text-secondary text-xs font-medium">نوع الخط</span>
+                  <div className="font-dropdown-mobile">
+                    <button
+                      onClick={() => setIsFontDropdownMobileOpen(!isFontDropdownMobileOpen)}
+                      className="font-dropdown-button-mobile"
+                    >
+                      <span>{getFontDisplayName(currentFont)}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 transition-transform ${isFontDropdownMobileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {isFontDropdownMobileOpen && (
+                      <div className="font-dropdown-menu-mobile">
+                        <button
+                          onClick={() => handleChangeFontType('elgharib')}
+                          className={`font-dropdown-item-mobile ${currentFont === 'elgharib' ? 'active' : ''}`}
+                        >
+                          الغريب
+                        </button>
+                        <button
+                          onClick={() => handleChangeFontType('ibm')}
+                          className={`font-dropdown-item-mobile ${currentFont === 'ibm' ? 'active' : ''}`}
+                        >
+                          IBM
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Desktop Layout */}
           <div className="hidden sm:flex items-center justify-between gap-6">
             <div className="flex-1 max-w-[500px] min-w-[200px] transition-all duration-300">
               <div className="relative">
@@ -305,13 +353,37 @@ const SurahText: React.FC = () => {
               >
                 +
               </button>
-              <button
-                onClick={resetFontSize}
-                className="font-size-reset"
-                title="إعادة تعيين حجم الخط"
-              >
-                إعادة تعيين
-              </button>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="text-text-secondary font-medium">نوع الخط</span>
+              <div className="font-dropdown">
+                <button
+                  onClick={() => setIsFontDropdownOpen(!isFontDropdownOpen)}
+                  className="font-dropdown-button"
+                >
+                  <span>{getFontDisplayName(currentFont)}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transition-transform ${isFontDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isFontDropdownOpen && (
+                  <div className="font-dropdown-menu">
+                    <button
+                      onClick={() => handleChangeFontType('elgharib')}
+                      className={`font-dropdown-item ${currentFont === 'elgharib' ? 'active' : ''}`}
+                    >
+                      الغريب
+                    </button>
+                    <button
+                      onClick={() => handleChangeFontType('ibm')}
+                      className={`font-dropdown-item ${currentFont === 'ibm' ? 'active' : ''}`}
+                    >
+                      IBM
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -320,7 +392,7 @@ const SurahText: React.FC = () => {
           <div className="bg-surface/50 rounded-lg py-3 px-3 sm:px-4 mb-6 sm:mb-8 text-right">
             {filteredVerses.length > 0 ? (
               <div className="text-xs sm:text-sm text-text-secondary">
-                تم العثور على <span className="text-accent font-medium">{filteredVerses.length}</span> آية من أصل <span className="text-text-primary">{verses.length}</span>
+                تم العثور على <span className="text-accent font-medium">{filteredVerses.filter(v => v.numberInSurah !== 0).length}</span> آية من أصل <span className="text-text-primary">{verses.filter(v => v.numberInSurah !== 0).length}</span>
               </div>
             ) : (
               <div className="text-xs sm:text-sm text-text-muted">
@@ -330,78 +402,110 @@ const SurahText: React.FC = () => {
           </div>
         )}
 
-
-
         <div className="space-y-6 sm:space-y-8">
           {filteredVerses.map((verse, index) => (
             <div 
               key={verse.numberInSurah}
-              className={`verse-card p-4 sm:p-8 fade-in cursor-pointer ${
+              className={`verse-card p-4 sm:p-8 fade-in ${
+                verse.numberInSurah === 0 ? '' : 'cursor-pointer'
+              } ${
                 selectedVerse === verse.numberInSurah ? 'selected' : ''
               }`}
               style={{ animationDelay: `${Math.min(index * 0.01, 0.5)}s` }}
-              onClick={() => setSelectedVerse(selectedVerse === verse.numberInSurah ? null : verse.numberInSurah)}
+              onClick={() => {
+                if (verse.numberInSurah !== 0) {
+                  setSelectedVerse(selectedVerse === verse.numberInSurah ? null : verse.numberInSurah);
+                }
+              }}
             >
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div>
-                    <div className="bg-accent text-[var(--color-badge-text)] px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-medium text-xs sm:text-sm transition-colors">
-                      آية {verse.numberInSurah}
+              {verse.numberInSurah === 0 ? (
+                <div className="flex flex-col items-center">
+                  <div 
+                    className={`basmala-text ${getFontClass(currentFont)}`}
+                    style={{ 
+                      fontSize: `${currentFontSize * 1.4}rem`,
+                      lineHeight: 2,
+                      letterSpacing: '0.02em'
+                    }}
+                  >
+                    {verse.arabic}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div>
+                        <div className="bg-accent text-[var(--color-badge-text)] px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-medium text-xs sm:text-sm transition-colors">
+                          آية {verse.numberInSurah}
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          audioControls.togglePlayPause(verse.numberInSurah);
+                        }}
+                        disabled={audioState.isLoading && audioState.currentVerse === verse.numberInSurah}
+                        className="audio-control-button flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface hover:bg-elevated transition-all duration-200 border border-border-secondary hover:border-accent/50 group"
+                        title={
+                          audioState.currentVerse === verse.numberInSurah && audioState.isPlaying
+                            ? 'إيقاف التلاوة'
+                            : 'تشغيل التلاوة'
+                        }
+                      >
+                        {audioState.isLoading && audioState.currentVerse === verse.numberInSurah ? (
+                          <div className="w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></div>
+                        ) : audioState.currentVerse === verse.numberInSurah && audioState.isPlaying ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-accent group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-text-muted group-hover:text-accent group-hover:scale-110 transition-all" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedTafseerVerse(verse);
+                          setIsTafseerModalOpen(true);
+                        }}
+                        className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface hover:bg-elevated transition-all duration-200 border border-border-secondary hover:border-accent/50 group"
+                        title="عرض التفسير"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-text-muted group-hover:text-accent group-hover:scale-110 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <div className="text-xs sm:text-sm text-text-muted">
+                      ص {verse.page} • ج {verse.juz}
                     </div>
                   </div>
-                  
-                  {/* Audio Control Button */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      audioControls.togglePlayPause(verse.numberInSurah);
-                    }}
-                    disabled={audioState.isLoading && audioState.currentVerse === verse.numberInSurah}
-                    className="audio-control-button flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface hover:bg-elevated transition-all duration-200 border border-border-secondary hover:border-accent/50 group"
-                    title={
-                      audioState.currentVerse === verse.numberInSurah && audioState.isPlaying
-                        ? 'إيقاف التلاوة'
-                        : 'تشغيل التلاوة'
-                    }
-                  >
-                    {audioState.isLoading && audioState.currentVerse === verse.numberInSurah ? (
-                      <div className="w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></div>
-                    ) : audioState.currentVerse === verse.numberInSurah && audioState.isPlaying ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-accent group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                      </svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-text-muted group-hover:text-accent group-hover:scale-110 transition-all" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                    )}
-                  </button>
-                </div>
-                
-                <div className="text-xs sm:text-sm text-text-muted">
-                  ص {verse.page} • ج {verse.juz}
-                </div>
-              </div>
 
-              <div className="verse-content-mobile sm:verse-content">
-                <div 
-                  className="quran-text text-text-primary leading-loose text-center"
-                  style={{ 
-                    fontSize: `${currentFontSize}rem`,
-                    lineHeight: 2.4,
-                    letterSpacing: '0.02em'
-                  }}
-                >
-                  {verse.arabic}
-                </div>
-              </div>
+                  <div className="verse-content-mobile sm:verse-content">
+                    <div 
+                      className={`${getFontClass(currentFont)} text-text-primary leading-loose text-center`}
+                      style={{ 
+                        fontSize: `${currentFontSize}rem`,
+                        lineHeight: 2.4,
+                        letterSpacing: '0.02em'
+                      }}
+                    >
+                      {verse.arabic}
+                    </div>
+                  </div>
+                </>
+              )}
 
-              {/* Embedded Audio Player */}
-              {audioState.currentVerse === verse.numberInSurah && (
+              {audioState.currentVerse === verse.numberInSurah && verse.numberInSurah !== 0 && (
                 <div className="embedded-audio-player mt-4 sm:mt-6">
                   <div className="bg-card/80 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-border-secondary">
                     <div className="flex items-center gap-3 sm:gap-4">
-                      {/* Play/Pause Control */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -426,14 +530,10 @@ const SurahText: React.FC = () => {
                         )}
                       </button>
 
-                      {/* Progress and Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 text-accent text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            <span className="truncate">تلاوة الشيخ مشاري العفاسي</span>
+                            <span className="truncate">الشيخ مشاري العفاسي</span>
                           </div>
                           
                           <div className="text-xs text-text-muted flex-shrink-0">
@@ -441,7 +541,6 @@ const SurahText: React.FC = () => {
                           </div>
                         </div>
                         
-                        {/* Progress Bar */}
                         <div className="relative">
                           <div className="audio-progress-bar h-2 bg-content rounded-full overflow-hidden">
                             <div 
@@ -455,7 +554,6 @@ const SurahText: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Stop Button */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -470,7 +568,6 @@ const SurahText: React.FC = () => {
                       </button>
                     </div>
 
-                    {/* Audio Error Display */}
                     {audioState.error && (
                       <div className="mt-3 flex items-center gap-2 text-red-400 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -494,7 +591,7 @@ const SurahText: React.FC = () => {
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
                       <div className="info-badge-mobile sm:info-badge text-center">
                         <div className="info-badge-label-mobile sm:info-badge-label">رقم الآية</div>
-                        <div className="info-badge-value-mobile sm:info-badge-value">{verse.numberInSurah}/{verses.length}</div>
+                        <div className="info-badge-value-mobile sm:info-badge-value">{verse.numberInSurah}/{verses.filter(v => v.numberInSurah !== 0).length}</div>
                       </div>
                       <div className="info-badge-mobile sm:info-badge text-center">
                         <div className="info-badge-label-mobile sm:info-badge-label">في المصحف</div>
@@ -516,6 +613,15 @@ const SurahText: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {selectedTafseerVerse && (
+        <TafseerModal
+          isOpen={isTafseerModalOpen}
+          onClose={() => setIsTafseerModalOpen(false)}
+          ayahNumber={selectedTafseerVerse.numberInSurah}
+          ayahText={selectedTafseerVerse.arabic}
+        />
+      )}
     </section>
   );
 };

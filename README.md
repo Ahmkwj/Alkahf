@@ -4,7 +4,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6.2-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.0.1-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.15-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern web application for reading and exploring Surah Al-Kahf (Chapter 18) of the Holy Quran, featuring both Arabic text and English translations.
 
@@ -67,7 +66,3 @@ alkahf/
 ## Contributing
 
 We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) before submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

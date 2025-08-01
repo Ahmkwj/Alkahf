@@ -198,10 +198,6 @@ When contributing to this Islamic project:
 - **Purpose**: Keep the project's spiritual purpose in mind
 - **Community**: Foster a welcoming environment for Muslims and non-Muslims alike
 
-## License
-
-By contributing to Alkahf, you agree that your contributions will be licensed under the MIT License.
-
 ---
 
 Thank you for contributing to Alkahf! May your efforts be rewarded and benefit the Muslim community worldwide. 

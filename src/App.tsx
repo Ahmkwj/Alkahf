@@ -18,7 +18,6 @@ function App() {
     return (
       <div className="fixed inset-0 bg-main flex items-center justify-center z-50 px-4">
         <div className="text-center">
-          {/* Simple Loading Animation */}
           <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-8">
             <div className="absolute inset-0 border-2 border-accent/20 rounded-full"></div>
             <div className="absolute inset-0 border-2 border-accent rounded-full animate-spin-slow"
@@ -29,7 +28,6 @@ function App() {
             </div>
           </div>
 
-          {/* Text Content */}
           <div className="space-y-4 animate-fade-in">
             <h2 className="text-xl sm:text-2xl text-accent font-light">
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ

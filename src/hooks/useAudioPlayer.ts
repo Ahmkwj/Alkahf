@@ -28,9 +28,8 @@ export const useAudioPlayer = () => {
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<number | null>(null);
 
-  // Clear progress interval
   const clearProgressInterval = useCallback(() => {
     if (progressIntervalRef.current) {
       clearInterval(progressIntervalRef.current);
@@ -38,7 +37,6 @@ export const useAudioPlayer = () => {
     }
   }, []);
 
-  // Start progress tracking
   const startProgressTracking = useCallback(() => {
     clearProgressInterval();
     progressIntervalRef.current = setInterval(() => {
@@ -56,7 +54,6 @@ export const useAudioPlayer = () => {
     }, 100);
   }, [clearProgressInterval]);
 
-  // Stop audio completely
   const stopAudio = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -74,7 +71,6 @@ export const useAudioPlayer = () => {
     });
   }, [clearProgressInterval]);
 
-  // Pause current audio
   const pauseAudio = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -86,15 +82,12 @@ export const useAudioPlayer = () => {
     }));
   }, [clearProgressInterval]);
 
-  // Play specific verse
   const playVerse = useCallback(async (verseNumber: number) => {
     try {
-      // If same verse is already playing, just resume
       if (audioState.currentVerse === verseNumber && audioRef.current && !audioRef.current.paused) {
         return;
       }
 
-      // Stop any currently playing audio
       stopAudio();
 
       setAudioState(prev => ({
@@ -104,20 +97,17 @@ export const useAudioPlayer = () => {
         currentVerse: verseNumber,
       }));
 
-      // Get audio URL
       const audioUrl = await getAudioUrlForVerse(verseNumber);
       if (!audioUrl) {
         throw new Error('Audio not available for this verse');
       }
 
-      // Create new audio element if needed
       if (!audioRef.current) {
         audioRef.current = new Audio();
       }
 
       const audio = audioRef.current;
 
-      // Set up event listeners
       const handleLoadStart = () => {
         setAudioState(prev => ({ ...prev, isLoading: true }));
       };
@@ -159,7 +149,6 @@ export const useAudioPlayer = () => {
         clearProgressInterval();
       };
 
-      // Remove any existing listeners
       audio.removeEventListener('loadstart', handleLoadStart);
       audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('play', handlePlay);
@@ -167,7 +156,6 @@ export const useAudioPlayer = () => {
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
 
-      // Add new listeners
       audio.addEventListener('loadstart', handleLoadStart);
       audio.addEventListener('canplay', handleCanPlay);
       audio.addEventListener('play', handlePlay);
@@ -175,15 +163,12 @@ export const useAudioPlayer = () => {
       audio.addEventListener('ended', handleEnded);
       audio.addEventListener('error', handleError);
 
-      // Set source and play
       audio.src = audioUrl;
       audio.load();
       
-      // Attempt to play
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.error('Error playing audio:', error);
+        playPromise.catch((_error) => {
           setAudioState(prev => ({
             ...prev,
             isPlaying: false,
@@ -194,7 +179,6 @@ export const useAudioPlayer = () => {
       }
 
     } catch (error) {
-      console.error('Error in playVerse:', error);
       setAudioState(prev => ({
         ...prev,
         isPlaying: false,
@@ -204,7 +188,6 @@ export const useAudioPlayer = () => {
     }
   }, [audioState.currentVerse, stopAudio, startProgressTracking, clearProgressInterval]);
 
-  // Toggle play/pause for specific verse
   const togglePlayPause = useCallback(async (verseNumber: number) => {
     if (audioState.currentVerse === verseNumber) {
       if (audioState.isPlaying) {
@@ -219,7 +202,6 @@ export const useAudioPlayer = () => {
     }
   }, [audioState.currentVerse, audioState.isPlaying, pauseAudio, playVerse]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       stopAudio();
