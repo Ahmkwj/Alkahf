@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchSurahAlKahfComplete } from '../services/quranApi';
 import type { ProcessedVerse } from '../services/quranApi';
+import { useAudioPlayer } from '../hooks/useAudioPlayer';
 
 type Theme = 'dark' | 'light' | 'sepia';
 
@@ -13,9 +14,20 @@ const SurahText: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [fontSizeLevel, setFontSizeLevel] = useState(5);
   const [currentTheme, setCurrentTheme] = useState<Theme>('dark');
+  
+  // Audio player hook
+  const { audioState, audioControls } = useAudioPlayer();
 
   const getFontSize = (level: number) => {
     return 1.2 + (level - 1) * 0.15;
+  };
+
+  const formatTime = (timeInSeconds: number): string => {
+    if (!timeInSeconds || isNaN(timeInSeconds)) return '0:00';
+    
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   const increaseFontSize = () => setFontSizeLevel(prev => Math.min(prev + 1, 10));
@@ -318,6 +330,8 @@ const SurahText: React.FC = () => {
           </div>
         )}
 
+
+
         <div className="space-y-6 sm:space-y-8">
           {filteredVerses.map((verse, index) => (
             <div 
@@ -335,6 +349,33 @@ const SurahText: React.FC = () => {
                       آية {verse.numberInSurah}
                     </div>
                   </div>
+                  
+                  {/* Audio Control Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      audioControls.togglePlayPause(verse.numberInSurah);
+                    }}
+                    disabled={audioState.isLoading && audioState.currentVerse === verse.numberInSurah}
+                    className="audio-control-button flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface hover:bg-elevated transition-all duration-200 border border-border-secondary hover:border-accent/50 group"
+                    title={
+                      audioState.currentVerse === verse.numberInSurah && audioState.isPlaying
+                        ? 'إيقاف التلاوة'
+                        : 'تشغيل التلاوة'
+                    }
+                  >
+                    {audioState.isLoading && audioState.currentVerse === verse.numberInSurah ? (
+                      <div className="w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></div>
+                    ) : audioState.currentVerse === verse.numberInSurah && audioState.isPlaying ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-accent group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-text-muted group-hover:text-accent group-hover:scale-110 transition-all" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    )}
+                  </button>
                 </div>
                 
                 <div className="text-xs sm:text-sm text-text-muted">
@@ -354,6 +395,93 @@ const SurahText: React.FC = () => {
                   {verse.arabic}
                 </div>
               </div>
+
+              {/* Embedded Audio Player */}
+              {audioState.currentVerse === verse.numberInSurah && (
+                <div className="embedded-audio-player mt-4 sm:mt-6">
+                  <div className="bg-card/80 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-border-secondary">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      {/* Play/Pause Control */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          audioControls.togglePlayPause(verse.numberInSurah);
+                        }}
+                        disabled={audioState.isLoading}
+                        className="audio-control-button flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-card hover:bg-elevated transition-all duration-200 border border-border-secondary hover:border-accent/50 group flex-shrink-0 relative z-10"
+                        title={
+                          audioState.isPlaying ? 'إيقاف التلاوة' : 'تشغيل التلاوة'
+                        }
+                      >
+                        {audioState.isLoading ? (
+                          <div className="w-5 h-5 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></div>
+                        ) : audioState.isPlaying ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        )}
+                      </button>
+
+                      {/* Progress and Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2 text-accent text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span className="truncate">تلاوة الشيخ مشاري العفاسي</span>
+                          </div>
+                          
+                          <div className="text-xs text-text-muted flex-shrink-0">
+                            {formatTime(audioState.progress)} / {formatTime(audioState.duration)}
+                          </div>
+                        </div>
+                        
+                        {/* Progress Bar */}
+                        <div className="relative">
+                          <div className="audio-progress-bar h-2 bg-content rounded-full overflow-hidden">
+                            <div 
+                              className="absolute top-0 left-0 h-full bg-accent rounded-full transition-all duration-300 z-10"
+                              style={{ 
+                                width: audioState.duration > 0 ? `${(audioState.progress / audioState.duration) * 100}%` : '0%' 
+                              }}
+                            ></div>
+                          </div>
+                          <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-accent/5 to-transparent opacity-50 pointer-events-none"></div>
+                        </div>
+                      </div>
+
+                      {/* Stop Button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          audioControls.stopAudio();
+                        }}
+                        className="p-2 hover:bg-elevated rounded-lg transition-colors flex-shrink-0"
+                        title="إيقاف التلاوة"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-text-muted hover:text-text-primary transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M6 6h12v12H6z"/>
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Audio Error Display */}
+                    {audioState.error && (
+                      <div className="mt-3 flex items-center gap-2 text-red-400 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <span>{audioState.error}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               
               {selectedVerse === verse.numberInSurah && (
                 <div className="fade-in mt-6 sm:mt-8">

@@ -35,8 +35,8 @@
   --color-main: #ffffff;
   --color-card: #ffffff;
   --color-surface: #f8fafc;
-  --color-elevated: #f1f5f9;
-  --color-content: #e2e8f0;
+  --color-elevated: #f8fafc;
+  --color-content: #f1f5f9;
   --color-footer: #ffffff;
   --color-accent: #2563eb;
   --color-badge: #ffffff;
@@ -431,6 +431,119 @@
     font-weight: 600;
     color: var(--color-text-primary);
     font-family: 'IBM Plex Sans Arabic', sans-serif;
+  }
+
+  /* Audio Controls */
+  .audio-control-button {
+    transition: all 0.2s ease;
+  }
+  
+  .audio-control-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15);
+  }
+  
+  .audio-control-button:active {
+    transform: translateY(0);
+  }
+  
+  .audio-control-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .audio-progress-bar {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .audio-progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.1), transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  /* Embedded Audio Player */
+  .embedded-audio-player {
+    animation: slideDown 0.3s ease-out;
+    transform-origin: top;
+  }
+  
+  .embedded-audio-player .audio-control-button {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .light .embedded-audio-player .audio-control-button {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+  }
+  
+  .light .embedded-audio-player {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+  }
+  
+  .embedded-audio-player .audio-control-button:hover {
+    box-shadow: 0 4px 16px rgba(96, 165, 250, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .light .audio-progress-bar {
+    background-color: #e2e8f0;
+  }
+  
+  .light .audio-progress-bar::before {
+    background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.05), transparent);
+  }
+
+  .light .embedded-audio-player .bg-accent {
+    background-color: #2563eb;
+  }
+
+  .light .embedded-audio-player .text-accent {
+    color: #2563eb;
+  }
+
+  .light .embedded-audio-player .text-text-muted {
+    color: #64748b;
+  }
+
+  .light .embedded-audio-player .border-border-secondary {
+    border-color: #e2e8f0;
+  }
+
+  .light .embedded-audio-player .bg-card {
+    background-color: #ffffff;
+  }
+
+  .light .embedded-audio-player .hover\:bg-elevated:hover {
+    background-color: #f8fafc;
+  }
+
+  .light .embedded-audio-player .bg-card\/80 {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  @keyframes slideDown {
+    0% { 
+      opacity: 0;
+      transform: scaleY(0);
+    }
+    100% { 
+      opacity: 1;
+      transform: scaleY(1);
+    }
   }
 
   /* Mobile viewport optimizations */

@@ -68,6 +68,26 @@ export interface ProcessedVerse {
   juz: number;
 }
 
+export interface AudioVerse {
+  number: number;
+  numberInSurah: number;
+  text: string;
+  audio: string;
+}
+
+export interface AudioApiResponse {
+  code: number;
+  status: string;
+  data: {
+    number: number;
+    name: string;
+    englishName: string;
+    numberOfAyahs: number;
+    ayahs: AudioVerse[];
+    edition: QuranEdition;
+  };
+}
+
 const BASE_URL = 'https://api.alquran.cloud/v1';
 const SURAH_NUMBER = 18;
 const CACHE_DURATION = 5 * 60 * 1000;
@@ -75,8 +95,15 @@ const CACHE_DURATION = 5 * 60 * 1000;
 let cachedVerses: ProcessedVerse[] | null = null;
 let cacheTimestamp: number = 0;
 
+let cachedAudioData: Map<number, string> | null = null;
+let audioCacheTimestamp: number = 0;
+
 const isCacheValid = (): boolean => {
   return cachedVerses !== null && (Date.now() - cacheTimestamp) < CACHE_DURATION;
+};
+
+const isAudioCacheValid = (): boolean => {
+  return cachedAudioData !== null && (Date.now() - audioCacheTimestamp) < CACHE_DURATION;
 };
 
 export const fetchSurahAlKahfComplete = async (): Promise<ProcessedVerse[]> => {
@@ -129,7 +156,56 @@ export const fetchSurahAlKahfComplete = async (): Promise<ProcessedVerse[]> => {
   return processedVerses;
 };
 
+export const fetchSurahAlKahfAudio = async (): Promise<Map<number, string>> => {
+  if (isAudioCacheValid() && cachedAudioData) {
+    return cachedAudioData;
+  }
+
+  const url = `${BASE_URL}/surah/${SURAH_NUMBER}/ar.alafasy`;
+  
+  try {
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data: AudioApiResponse = await response.json();
+    
+    if (data.code !== 200 || !data.data || !data.data.ayahs) {
+      throw new Error('Invalid audio API response');
+    }
+
+    const audioMap = new Map<number, string>();
+    data.data.ayahs.forEach((ayah) => {
+      if (ayah.audio && ayah.audio.trim() !== '') {
+        audioMap.set(ayah.numberInSurah, ayah.audio);
+      }
+    });
+
+    cachedAudioData = audioMap;
+    audioCacheTimestamp = Date.now();
+
+    return audioMap;
+  } catch (error) {
+    console.error('Error fetching audio data:', error);
+    throw new Error('Failed to fetch audio data. Please check your connection and try again.');
+  }
+};
+
+export const getAudioUrlForVerse = async (verseNumber: number): Promise<string | null> => {
+  try {
+    const audioMap = await fetchSurahAlKahfAudio();
+    return audioMap.get(verseNumber) || null;
+  } catch (error) {
+    console.error('Error getting audio URL for verse:', verseNumber, error);
+    return null;
+  }
+};
+
 export const clearApiCache = (): void => {
   cachedVerses = null;
   cacheTimestamp = 0;
+  cachedAudioData = null;
+  audioCacheTimestamp = 0;
 };
