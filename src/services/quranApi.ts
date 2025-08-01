@@ -109,6 +109,17 @@ const TAFSEER_BASE_URL = 'http://api.quran-tafseer.com';
 const SURAH_NUMBER = 18;
 const CACHE_DURATION = 5 * 60 * 1000;
 
+const isProduction = () => {
+  return typeof window !== 'undefined' && window.location.protocol === 'https:';
+};
+
+const getTafseerUrl = (endpoint: string) => {
+  if (isProduction()) {
+    return `https://api.allorigins.win/raw?url=${encodeURIComponent(`${TAFSEER_BASE_URL}${endpoint}`)}`;
+  }
+  return `${TAFSEER_BASE_URL}${endpoint}`;
+};
+
 let cachedVerses: ProcessedVerse[] | null = null;
 let cacheTimestamp: number = 0;
 
@@ -296,7 +307,7 @@ export const fetchTafseerList = async (): Promise<TafseerInfo[]> => {
     return cachedTafseerList;
   }
 
-  const url = `${TAFSEER_BASE_URL}/tafseer`;
+  const url = getTafseerUrl('/tafseer');
   
   try {
     const response = await fetch(url);
@@ -327,7 +338,7 @@ export const fetchVerseTafseer = async (tafseerId: number, surahNumber: number, 
     return cachedTafseerData.get(cacheKey)!;
   }
 
-  const url = `${TAFSEER_BASE_URL}/tafseer/${tafseerId}/${surahNumber}/${ayahNumber}`;
+  const url = getTafseerUrl(`/tafseer/${tafseerId}/${surahNumber}/${ayahNumber}`);
   
   try {
     const response = await fetch(url);
