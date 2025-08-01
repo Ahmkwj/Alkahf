@@ -18,7 +18,6 @@ function App() {
     return (
       <div className="fixed inset-0 bg-main flex items-center justify-center z-50">
         <div className="text-center relative">
-          {/* Logo */}
           <div className="w-20 h-20 mx-auto mb-8 relative">
             <div className="absolute inset-0 bg-accent rounded-full animate-pulse opacity-25"></div>
             <svg className="w-full h-full" viewBox="0 0 64 64" fill="none">
@@ -30,7 +29,6 @@ function App() {
             </div>
           </div>
           
-          {/* Text */}
           <div className="space-y-4 animate-fade-in">
             <h2 className="text-2xl text-accent font-light quran-text">
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ

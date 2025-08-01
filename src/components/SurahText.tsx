@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchSurahAlKahfComplete } from '../services/quranApi';
 import type { ProcessedVerse } from '../services/quranApi';
 
@@ -39,9 +39,8 @@ const SurahText: React.FC = () => {
         const fetchedVerses = await fetchSurahAlKahfComplete();
         setVerses(fetchedVerses);
         setFilteredVerses(fetchedVerses);
-      } catch (err) {
+      } catch {
         setError('فشل في تحميل آيات سورة الكهف. يرجى المحاولة مرة أخرى.');
-        console.error('Error loading verses:', err);
       } finally {
         setLoading(false);
       }
