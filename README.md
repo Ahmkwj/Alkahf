@@ -1,152 +1,178 @@
 # Al-Kahf | سورة الكهف
 
-A modern, beautiful web application for reading and exploring Surah Al-Kahf (Chapter 18) of the Holy Quran. This application provides an elegant interface for studying the verses with both Arabic text and English translations.
+[![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6.2-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.0.1-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.15-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![ESLint](https://img.shields.io/badge/ESLint-9.13.0-4B32C3?style=flat&logo=eslint&logoColor=white)](https://eslint.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## ✨ Features
+A modern, elegant web application for reading and exploring Surah Al-Kahf (Chapter 18) of the Holy Quran. This application provides a beautiful interface for studying the verses with authentic Arabic text and English translations.
 
-- **Beautiful UI**: Modern, responsive design with three theme options (Dark, Light, Sepia)
-- **Bilingual Support**: Arabic text with English translations
-- **Advanced Search**: Search through verses in both Arabic and English
-- **Typography Controls**: Adjustable font sizes for comfortable reading
-- **Verse Navigation**: Click on any verse to view detailed information
-- **Offline-First**: Caching for improved performance
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **RTL Support**: Full right-to-left language support for Arabic
+---
 
-## 🚀 Quick Start
+## Features
+
+### User Experience
+- **Responsive Design** — Seamless experience across desktop and mobile devices
+- **Multiple Themes** — Dark, Light, and Sepia themes for comfortable reading
+- **Typography Controls** — Adjustable font sizes with 10 levels of customization
+- **Intuitive Navigation** — Click any verse to reveal detailed information
+
+### Content & Search
+- **Bilingual Support** — Authentic Arabic text with English translations
+- **Advanced Search** — Search through verses in both Arabic and English
+- **Diacritics Support** — Search works with or without Arabic diacritics
+- **Comprehensive Filters** — Search by verse number, page, or Juz (part)
+
+### Technical Excellence
+- **Offline-First** — Intelligent caching for improved performance
+- **RTL Support** — Full right-to-left language support for Arabic
+- **Modern Architecture** — Built with latest React and TypeScript
+- **Optimized Performance** — Fast loading and smooth interactions
+
+---
+
+## Quick Start
 
 ### Prerequisites
 
-- Node.js (version 18 or higher)
-- npm or yarn
+Ensure you have the following installed:
+- **Node.js** version 18 or higher
+- **npm** or **yarn** package manager
 
 ### Installation
 
-1. Clone the repository:
-```bash
-git clone https://github.com/ahmkwj/alkahf.git
-cd alkahf
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/username/alkahf.git
+   cd alkahf
+   ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-3. Start the development server:
-```bash
-npm run dev
-```
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+4. **Open application**
+   
+   Navigate to `http://localhost:5173` in your browser
 
-## 🛠️ Development
+---
+
+## Development
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues automatically
-- `npm run type-check` - Run TypeScript type checking
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Create optimized production build |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint for code quality checks |
+| `npm run lint:fix` | Automatically fix ESLint issues |
+| `npm run type-check` | Run TypeScript type checking |
 
-### Project Structure
+### Project Architecture
 
 ```
 alkahf/
 ├── src/
-│   ├── components/          # React components
-│   │   ├── Header.tsx       # Application header
-│   │   ├── SurahText.tsx    # Main content component
-│   │   └── Footer.tsx       # Application footer
-│   ├── services/            # API services
-│   │   └── quranApi.ts      # Quran API integration
-│   ├── assets/              # Static assets
-│   │   └── UthmanTNB_v2-0.ttf # Arabic font
-│   ├── App.tsx              # Main application component
-│   ├── main.tsx             # Application entry point
-│   └── index.css            # Global styles and themes
-├── public/                  # Public assets
-└── dist/                    # Production build (generated)
+│   ├── components/
+│   │   ├── Header.tsx           # Application header component
+│   │   ├── SurahText.tsx        # Main content and verse display
+│   │   └── Footer.tsx           # Application footer component
+│   │
+│   ├── services/
+│   │   └── quranApi.ts          # API integration and caching logic
+│   │
+│   ├── assets/
+│   │   └── UthmanTNB_v2-0.ttf   # Authentic Arabic Uthmani font
+│   │
+│   ├── App.tsx                  # Root application component
+│   ├── main.tsx                 # Application entry point
+│   └── index.css                # Global styles and theme system
+│
+├── public/                      # Static assets and favicon
+├── dist/                        # Production build output
+└── docs/                        # Documentation files
 ```
-
-## 🎨 Themes
-
-The application supports three beautiful themes:
-
-- **Dark Theme**: Default dark mode with blue accents
-- **Light Theme**: Clean light mode for daytime reading
-- **Sepia Theme**: Warm, book-like theme for comfortable reading
-
-## 📱 Features in Detail
-
-### Search Functionality
-- Search in Arabic text (with or without diacritics)
-- Search in English translations
-- Search by verse number, page, or Juz (part)
-- Real-time search results with highlighting
-
-### Typography Controls
-- 10 font size levels for Arabic text
-- Optimized for readability with proper line spacing
-- Uses authentic Uthmani script font
-
-### Verse Information
-Click on any verse to view:
-- Verse number within the Surah
-- Global verse number in the Quran
-- Page number in the Mushaf
-- Juz (part) number
-- English translation
-
-## 🔧 Technical Stack
-
-- **Frontend**: React 18 with TypeScript
-- **Styling**: Tailwind CSS with custom design system
-- **Build Tool**: Vite
-- **Linting**: ESLint with React-specific rules
-- **API**: Al-Quran Cloud API for verse data
-- **Font**: Uthmani font for authentic Arabic text rendering
-
-## 🌐 API Integration
-
-The application uses the [Al-Quran Cloud API](https://alquran.cloud/api) to fetch:
-- Arabic text from `quran-simple-enhanced` edition
-- English translations from `en.sahih` edition
-- Verse metadata including page and Juz information
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Development Guidelines
-
-1. Follow the existing code style and structure
-2. Use TypeScript for type safety
-3. Write clean, readable code with proper error handling
-4. Test your changes thoroughly
-5. Update documentation when necessary
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Al-Quran Cloud API for providing the Quranic text and translations
-- The Islamic community for inspiration and guidance
-- Contributors and users who help improve this application
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-- Open an [issue](https://github.com/ahmkwj/alkahf/issues)
-- Check existing issues for solutions
-- Review the documentation
 
 ---
 
-**"And whoever relies upon Allah - then He is sufficient for him. Indeed, Allah will accomplish His purpose."** - Quran 65:3
+## Technical Stack
 
-Made with ❤️ for the Muslim community
+### Frontend Technologies
+- **React 18** — Modern React with hooks and concurrent features
+- **TypeScript** — Static typing for enhanced developer experience
+- **Tailwind CSS** — Utility-first CSS framework with custom design system
+
+### Build & Development Tools
+- **Vite** — Fast build tool with hot module replacement
+- **ESLint** — Code linting with React-specific rules
+- **PostCSS** — CSS processing with Autoprefixer
+
+### External Services
+- **Al-Quran Cloud API** — Reliable source for Quranic text and metadata
+
+---
+
+## Theme System
+
+The application features three carefully crafted themes:
+
+**Dark Theme**
+- Primary theme with deep blacks and blue accents
+- Optimized for low-light reading conditions
+
+**Light Theme**
+- Clean, bright interface for daytime use
+- High contrast for excellent readability
+
+**Sepia Theme**
+- Warm, book-like appearance
+- Reduces eye strain during extended reading sessions
+
+We welcome contributions from the community. Please read our contributing guidelines before submitting pull requests.
+
+### Development Guidelines
+
+1. **Code Quality**
+   - Follow TypeScript best practices
+   - Maintain existing code style and structure
+   - Ensure all tests pass before submitting
+
+2. **Documentation**
+   - Update README for new features
+   - Include clear commit messages
+   - Document any breaking changes
+
+3. **Testing**
+   - Test changes across different browsers
+   - Verify responsive design on mobile devices
+   - Ensure theme switching works correctly
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for complete details.
+
+---
+
+## Support
+
+### Getting Help
+
+- **Issues** — Report bugs or request features via [GitHub Issues](https://github.com/username/alkahf/issues)
+- **Documentation** — Check existing documentation for common questions
+- **Community** — Engage with other users and contributors
+
+### Contact
+
+For questions, suggestions, or collaboration opportunities, please open an issue on GitHub.
