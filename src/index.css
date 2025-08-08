@@ -138,35 +138,57 @@
 
 @layer utilities {
   .theme-button {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     background: var(--color-card);
     border: 1px solid var(--color-border-secondary);
     color: var(--color-text-muted);
+    padding: 0;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 8px;
   }
 
   .theme-button:hover {
     background: var(--color-elevated);
     color: var(--color-text-primary);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .theme-button.active {
     background: var(--color-accent);
     color: var(--color-main);
     border-color: var(--color-accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .theme-button svg {
-    transition: transform 0.2s ease;
+    position: relative;
+    z-index: 1;
   }
 
   .theme-button:hover svg {
-    transform: none;
+    transform: scale(1.05);
   }
 
   .verse-card {
@@ -258,27 +280,51 @@
   }
 
   .font-size-button {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    transition: background-color 0.2s ease;
+    font-size: 16px;
+    transition: all 0.2s ease;
     background: var(--color-card);
     color: var(--color-text-tertiary);
     border: 1px solid var(--color-border-secondary);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .font-size-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 8px;
   }
 
   .font-size-button:hover {
     background: var(--color-elevated);
     color: var(--color-text-primary);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .font-size-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .font-size-value {
-    width: 36px;
-    height: 32px;
+    width: 40px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -286,8 +332,14 @@
     font-size: 14px;
     color: var(--color-accent);
     background: var(--color-card);
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid var(--color-border-secondary);
+    transition: all 0.2s ease;
+  }
+
+  .font-size-value:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .font-size-reset {
@@ -312,14 +364,14 @@
   }
 
   .font-dropdown-button {
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
     font-weight: 500;
     font-size: 13px;
     background: var(--color-card);
     color: var(--color-text-tertiary);
     border: 1px solid var(--color-border-secondary);
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     min-width: 100px;
     text-align: center;
     cursor: pointer;
@@ -327,11 +379,35 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .font-dropdown-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 8px;
   }
 
   .font-dropdown-button:hover {
     background: var(--color-elevated);
     color: var(--color-text-primary);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .font-dropdown-button span,
+  .font-dropdown-button svg {
+    position: relative;
+    z-index: 1;
   }
 
   .font-dropdown-menu {
@@ -341,24 +417,39 @@
     right: 0;
     background: var(--color-card);
     border: 1px solid var(--color-border-secondary);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     z-index: 50;
     overflow: hidden;
     margin-top: 4px;
+    backdrop-filter: blur(8px);
+    animation: slideDown 0.2s ease-out;
   }
 
   .font-dropdown-item {
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-weight: 500;
     font-size: 13px;
     color: var(--color-text-tertiary);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     border: none;
     background: none;
     width: 100%;
     text-align: center;
+    position: relative;
+  }
+
+  .font-dropdown-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-elevated);
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
 
   .font-dropdown-item:hover {
@@ -366,9 +457,23 @@
     color: var(--color-text-primary);
   }
 
+  .font-dropdown-item:hover::before {
+    opacity: 1;
+  }
+
   .font-dropdown-item.active {
     background: var(--color-accent);
     color: var(--color-main);
+    font-weight: 600;
+  }
+
+  .font-dropdown-item.active::before {
+    opacity: 0;
+  }
+
+  .font-dropdown-item span {
+    position: relative;
+    z-index: 1;
   }
 
   .font-dropdown-mobile {
@@ -377,14 +482,14 @@
   }
 
   .font-dropdown-button-mobile {
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
     font-weight: 500;
     font-size: 11px;
     background: var(--color-card);
     color: var(--color-text-tertiary);
     border: 1px solid var(--color-border-secondary);
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     min-width: 70px;
     text-align: center;
     cursor: pointer;
@@ -393,11 +498,35 @@
     justify-content: space-between;
     gap: 4px;
     height: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .font-dropdown-button-mobile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 8px;
   }
 
   .font-dropdown-button-mobile:hover {
     background: var(--color-elevated);
     color: var(--color-text-primary);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .font-dropdown-button-mobile span,
+  .font-dropdown-button-mobile svg {
+    position: relative;
+    z-index: 1;
   }
 
   .font-dropdown-menu-mobile {
@@ -407,24 +536,39 @@
     right: 0;
     background: var(--color-card);
     border: 1px solid var(--color-border-secondary);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     z-index: 50;
     overflow: hidden;
     margin-top: 4px;
+    backdrop-filter: blur(8px);
+    animation: slideDown 0.2s ease-out;
   }
 
   .font-dropdown-item-mobile {
-    padding: 6px 8px;
+    padding: 8px 10px;
     font-weight: 500;
     font-size: 11px;
     color: var(--color-text-tertiary);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     border: none;
     background: none;
     width: 100%;
     text-align: center;
+    position: relative;
+  }
+
+  .font-dropdown-item-mobile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-elevated);
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
 
   .font-dropdown-item-mobile:hover {
@@ -432,9 +576,23 @@
     color: var(--color-text-primary);
   }
 
+  .font-dropdown-item-mobile:hover::before {
+    opacity: 1;
+  }
+
   .font-dropdown-item-mobile.active {
     background: var(--color-accent);
     color: var(--color-main);
+    font-weight: 600;
+  }
+
+  .font-dropdown-item-mobile.active::before {
+    opacity: 0;
+  }
+
+  .font-dropdown-item-mobile span {
+    position: relative;
+    z-index: 1;
   }
 
   .header-container {
@@ -523,23 +681,51 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     background: var(--color-card);
     border: 1px solid var(--color-border-secondary);
     color: var(--color-text-muted);
     padding: 0;
     margin: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-button-mobile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 8px;
   }
 
   .theme-button-mobile:hover {
     background: var(--color-elevated);
     color: var(--color-text-primary);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .theme-button-mobile.active {
     background: var(--color-accent);
     color: var(--color-main);
     border-color: var(--color-accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .theme-button-mobile svg {
+    position: relative;
+    z-index: 1;
+  }
+
+  .theme-button-mobile:hover svg {
+    transform: scale(1.05);
   }
 
   /* Font size controls now use theme-button-mobile class */
@@ -723,6 +909,161 @@
       min-height: 44px;
       min-width: 44px;
     }
+
+    /* Enhanced mobile control header styling */
+    .bg-surface {
+      backdrop-filter: blur(8px);
+    }
+
+    /* Better mobile button spacing */
+    .theme-button-mobile {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    /* Improved mobile dropdown positioning */
+    .font-dropdown-menu-mobile {
+      position: fixed;
+      top: auto;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100vw - 2rem);
+      max-width: 300px;
+      margin-top: 8px;
+      z-index: 100;
+    }
+
+    /* Better mobile search input */
+    input[type="text"] {
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    /* Enhanced mobile grid layout */
+    .grid-cols-2 {
+      gap: 1rem;
+    }
+
+    /* Better mobile spacing */
+    .space-y-4 > * + * {
+      margin-top: 1.5rem;
+    }
+  }
+
+  /* Tablet optimizations */
+  @media screen and (min-width: 641px) and (max-width: 1024px) {
+    /* Improved tablet layout */
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    /* Better tablet button sizing */
+    .theme-button {
+      width: 38px;
+      height: 38px;
+    }
+
+    .font-size-button {
+      width: 34px;
+      height: 34px;
+    }
+
+    /* Enhanced tablet spacing */
+    .gap-6 {
+      gap: 1.25rem;
+    }
+  }
+
+  /* Enhanced animations */
+  @keyframes slideDown {
+    0% { 
+      opacity: 0;
+      transform: translateY(-8px) scale(0.95);
+    }
+    100% { 
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced control header animations */
+  .bg-surface {
+    animation: fadeInUp 0.3s ease-out;
+  }
+
+  /* Improved focus states */
+  .theme-button:focus,
+  .theme-button-mobile:focus,
+  .font-size-button:focus,
+  .font-dropdown-button:focus,
+  .font-dropdown-button-mobile:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Enhanced hover effects */
+  .theme-button:hover,
+  .theme-button-mobile:hover,
+  .font-size-button:hover,
+  .font-dropdown-button:hover,
+  .font-dropdown-button-mobile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Active state improvements */
+  .theme-button:active,
+  .theme-button-mobile:active,
+  .font-size-button:active,
+  .font-dropdown-button:active,
+  .font-dropdown-button-mobile:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced border radius consistency */
+  .rounded-xl {
+    border-radius: 12px;
+  }
+
+  .rounded-lg {
+    border-radius: 10px;
+  }
+
+  .rounded-md {
+    border-radius: 8px;
+  }
+
+  /* Improved shadow system */
+  .shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Enhanced backdrop blur */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+
+  /* Better transition timing */
+  .transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  .duration-200 {
+    transition-duration: 200ms;
   }
 
   /* Basmala Styling */

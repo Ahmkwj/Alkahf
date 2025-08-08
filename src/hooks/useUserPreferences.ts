@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 
 export type Theme = 'dark' | 'light' | 'sepia';
 export type FontType = 'elgharib' | 'ibm';
+export type DisplayMode = 'basic' | 'advanced';
 
 const STORAGE_KEYS = {
   THEME: 'alkahf-theme',
   FONT_SIZE: 'alkahf-font-size',
-  FONT_TYPE: 'alkahf-font-type'
+  FONT_TYPE: 'alkahf-font-type',
+  DISPLAY_MODE: 'alkahf-display-mode'
 } as const;
 
 const getStoredTheme = (): Theme => {
@@ -48,6 +50,18 @@ const getStoredFontType = (): FontType => {
   return 'elgharib';
 };
 
+const getStoredDisplayMode = (): DisplayMode => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.DISPLAY_MODE);
+    if (stored && ['basic', 'advanced'].includes(stored)) {
+      return stored as DisplayMode;
+    }
+  } catch (error) {
+    
+  }
+  return 'advanced';
+};
+
 const setStoredTheme = (theme: Theme): void => {
   try {
     localStorage.setItem(STORAGE_KEYS.THEME, theme);
@@ -72,10 +86,19 @@ const setStoredFontType = (fontType: FontType): void => {
   }
 };
 
+const setStoredDisplayMode = (mode: DisplayMode): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.DISPLAY_MODE, mode);
+  } catch (error) {
+    
+  }
+};
+
 export const useUserPreferences = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(getStoredTheme());
   const [fontSizeLevel, setFontSizeLevel] = useState(getStoredFontSize());
   const [currentFont, setCurrentFont] = useState<FontType>(getStoredFontType());
+  const [displayMode, setDisplayMode] = useState<DisplayMode>(getStoredDisplayMode());
 
   useEffect(() => {
     document.documentElement.className = currentTheme;
@@ -108,6 +131,11 @@ export const useUserPreferences = () => {
     setStoredFontType(fontType);
   };
 
+  const changeDisplayMode = (mode: DisplayMode) => {
+    setDisplayMode(mode);
+    setStoredDisplayMode(mode);
+  };
+
   const getFontSize = (level: number) => {
     return 1.2 + (level - 1) * 0.15;
   };
@@ -124,10 +152,12 @@ export const useUserPreferences = () => {
     currentTheme,
     fontSizeLevel,
     currentFont,
+    displayMode,
     changeTheme,
     increaseFontSize,
     decreaseFontSize,
     changeFontType,
+    changeDisplayMode,
     getFontSize,
     getFontClass,
     getFontDisplayName,
